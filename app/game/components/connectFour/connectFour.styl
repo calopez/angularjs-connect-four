@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300italic,600italic,400,600,300,700");
+@import "~jeet"
+
+edit()
+*
+    box-sizing :border-box
+    font-family : 'Open Sans'
+    line-height : 1rem
+
+html
+    height :100%
+
+.container
+    .main
+        col(7/10)
+        height :100%
+        background-color :gold
+        padding  :10px
+    .panel
+        height : 100%
+        col(3/10)
+.row
+    stack()
+    height :100px
+    padding-bottom : 5px
+    .circle
+        b()
+        col(1/7)
+        height :100%
+        width :@heigth
+        background-color :white
+        border-radius: 50%;
+
+
+.score-board
+    stack()
+    height : 200px
+    b()
+    .player
+        stack()
+        div
+            col(1/2)
+        .row
+            height : 100px
+            width : 100px
+            text-align :center
+        .player-icon
+            center()
+        .player-score
+            font-weight :800
+            font-size : 3rem
+            margin-top : 36px
