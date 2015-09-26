@@ -21,6 +21,7 @@ var services = angular.module("game.services", []);
 
 services.service("FakeGameService", require('./components/services/FakeGameService'));
 services.service("ConnectFourAPIService", require('./components/services/ConnectFourAPIService'));
+services.service("PollingService", require('./components/services/PollingService'));
 
 /* ----------------------------------------------------------------------------
 *                           CONTROLLERS

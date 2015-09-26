@@ -2,7 +2,7 @@
 
     <div class="main">
         <div class="row" ng-repeat="row in CFour.board">
-            <div class="circle" ng-repeat="token in row track by $index" ng-click="CFour.play($parent.$index, $index)">{{token.value}}</div>
+            <div class="circle" ng-repeat="token in row track by $index" ng-click="CFour.play($parent.$index, $index)">{{token.player}}</div>
         </div>
 
     </div>

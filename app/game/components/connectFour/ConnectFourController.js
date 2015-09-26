@@ -14,13 +14,13 @@
 require('./connectFour.styl');
 require('ngtemplate?relativeTo=/game/components/connectFour!./connectFour.html');
 
-var ConnectFourController = function ($routeParams, ConnectFourAPIService) {
+var ConnectFourController = function ($scope, $routeParams, ConnectFourAPIService, PollingService) {
     'use strict';
 
     var CFour = this;
     CFour.title = "Connect Four Game";
     CFour.playing = true;
-    CFour.showPlayerPaths= false;
+    CFour.showPlayerPaths = false;
     CFour.rightPlayerId = false;
 
     CFour.player = {
@@ -34,30 +34,7 @@ var ConnectFourController = function ($routeParams, ConnectFourAPIService) {
         }
     };
 
-    var game,
-        gameService = ConnectFourAPIService.ConnectFourGame(CFour.player.one.id, CFour.player.two.id);
-
-
-
-
-    /** ------------------------------------------------------------------------------
-     *                                CONTROL
-     * -------------------------------------------------------------------------------- */
-
-    CFour.startGame = function () {
-        gameService.start().then(function (response) {
-            CFour.board = response.data;
-            CFour.showPlayerPaths= true;
-        });
-    };
-
-    CFour.play = function (row, col) {
-        gameService.play(row, col, CFour.palyerId).then(function (response) {
-            CFour.board = response.data;
-                console.log(response);
-        });
-    };
-
+    var gameService = ConnectFourAPIService.ConnectFourGame(CFour.player.one.id, CFour.player.two.id);
 
     /** ------------------------------------------------------------------------------
      *                                INIT
@@ -67,28 +44,77 @@ var ConnectFourController = function ($routeParams, ConnectFourAPIService) {
         CFour.playing = false;
 
     } else {
-        console.log('$routeParams.playerId:'+$routeParams.playerId + '-'+CFour.player.one.id );
+
         if (Number($routeParams.playerId) === CFour.player.one.id ||
             Number($routeParams.playerId) === CFour.player.two.id) {
- console.log('calling...');
-            CFour.palyerId = $routeParams.playerId;
+            CFour.playerId = $routeParams.playerId;
             CFour.rightPlayer = true;
             CFour.playing = true;
-
-            gameService.get().then(function (response) {
-               CFour.board = response.data;
-                console.log('la respuesta');
-                            console.log(response);
-
-            });
-
-
         }
+    }
+
+
+    /** ------------------------------------------------------------------------------
+     *                                CONTROL
+     * -------------------------------------------------------------------------------- */
+
+    //    var updateBoard = function methodName (arguments) {
+    //
+    //    };
+
+    CFour.startGame = function () {
+        gameService.start().then(function (response) {
+            CFour.board = response.data;
+            CFour.showPlayerPaths = true;
+        });
+    };
+
+    CFour.play = function (row, col) {
+        gameService.play(row, col, CFour.playerId).then(function (response) {
+            CFour.board = response.data;
+
+        });
+    };
+
+    /** ------------------------------------------------------------------------------
+     *                                "REAL TIME" LIKE
+     * -------------------------------------------------------------------------------- */
+
+    var request = PollingService.Polling($scope),
+        interval = 500,
+        i, j;
+
+    if (CFour.playing === true) {
+
+        request.startPolling('CFour/refresh', gameService.get, interval);
+
+        $scope.$on('CFour/refresh', function (evt, response) {
+
+            if (CFour.board === undefined) {
+                CFour.board = response.data;
+            } else {
+                var board = response.data;
+                var numberOfRows = CFour.board.length, // sure this should be properties of the board.
+                    numberOfCols = CFour.board[0].length;
+
+                for (i = 0; i < numberOfRows; i++) {
+                    for (j = 0; j < numberOfCols; j++) {
+                        if (CFour.board[i][j].value !== board[i][j].value) {
+
+                            CFour.board[i][j].player = board[i][j].player;
+                            CFour.board[i][j].value = board[i][j].value;
+                        }
+
+                    }
+                }
+            }
+
+        });
     }
 
 
 };
 
-ConnectFourController.$inject = ['$routeParams', 'ConnectFourAPIService'];
+ConnectFourController.$inject = ['$scope', '$routeParams', 'ConnectFourAPIService', 'PollingService'];
 
 module.exports = ConnectFourController;

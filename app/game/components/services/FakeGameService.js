@@ -114,13 +114,12 @@ var FakeGameService = function (localStorageService) {
 
             var token = CFour.board[row][col];
 
-            console.log(token)
-            CFour.board[token.currentRow][col].value = player; // well seems I just needed one
+            CFour.board[token.currentRow][col].value = 1;
             CFour.board[token.currentRow][col].player = player;
 
-            Token.subtractRow.call(token)
+            Token.subtractRow.call(token);
 
-            localStorageService.add('Cfour.board', CFour.board);
+            localStorageService.set('Cfour.board', CFour.board);
 
             return CFour.board;
         };
@@ -131,7 +130,7 @@ var FakeGameService = function (localStorageService) {
         };
 
         var get = function () {
-            return CFour.board;
+            return localStorageService.get('Cfour.board') || CFour.board;
         };
 
         service.play = play;
