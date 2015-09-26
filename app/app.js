@@ -6,8 +6,9 @@ require('ngSanitize');
 require('ngRoute');
 require('ngAnimate');
 require('./game/game');
+require('LocalStorageModule');
 
-var app = angular.module('app', ['ngResource', 'ngSanitize', 'ngRoute', 'ngAnimate', 'game']);
+var app = angular.module('app', ['ngResource', 'ngSanitize', 'LocalStorageModule', 'ngRoute', 'ngAnimate', 'game']);
 
 
 app.config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {

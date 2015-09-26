@@ -14,90 +14,81 @@
 require('./connectFour.styl');
 require('ngtemplate?relativeTo=/game/components/connectFour!./connectFour.html');
 
-var ConnectFourController = function ( $routeParams ) {
+var ConnectFourController = function ($routeParams, ConnectFourAPIService) {
     'use strict';
 
     var CFour = this;
-
     CFour.title = "Connect Four Game";
-    CFour.rightPlayer = true;
+    CFour.playing = true;
+    CFour.showPlayerPaths= false;
+    CFour.rightPlayerId = false;
+
+    CFour.player = {
+        one: {
+            id: 1,
+            path: '/games/1'
+        },
+        two: {
+            id: 2,
+            path: '/games/2'
+        }
+    };
+
+    var game,
+        gameService = ConnectFourAPIService.ConnectFourGame(CFour.player.one.id, CFour.player.two.id);
+
+
+
+
+    /** ------------------------------------------------------------------------------
+     *                                CONTROL
+     * -------------------------------------------------------------------------------- */
+
+    CFour.startGame = function () {
+        gameService.start().then(function (response) {
+            CFour.board = response.data;
+            CFour.showPlayerPaths= true;
+        });
+    };
+
+    CFour.play = function (row, col) {
+        gameService.play(row, col, CFour.palyerId).then(function (response) {
+            CFour.board = response.data;
+                console.log(response);
+        });
+    };
+
 
     /** ------------------------------------------------------------------------------
      *                                INIT
      * -------------------------------------------------------------------------------- */
-        if( $routeParams.playerId ) {
-            CFour.palyerId =  $routeParams.playerId;
-        } else {
-            CFour.rightPlayer = false;
+
+    if ($routeParams.playerId === undefined) {
+        CFour.playing = false;
+
+    } else {
+        console.log('$routeParams.playerId:'+$routeParams.playerId + '-'+CFour.player.one.id );
+        if (Number($routeParams.playerId) === CFour.player.one.id ||
+            Number($routeParams.playerId) === CFour.player.two.id) {
+ console.log('calling...');
+            CFour.palyerId = $routeParams.playerId;
+            CFour.rightPlayer = true;
+            CFour.playing = true;
+
+            gameService.get().then(function (response) {
+               CFour.board = response.data;
+                console.log('la respuesta');
+                            console.log(response);
+
+            });
+
+
         }
-
-    /** ------------------------------------------------------------------------------
-     *                                DESIGN
-     * -------------------------------------------------------------------------------- */
-    var TokenClass = {
-        new: function () {
-            var obj = {
-                player: this.player,
-                value: this.value,
-                currentRow: this.currentRow,
-                currentTurn: this.currentTurn
-            };
-            return JSON.parse(JSON.stringify(obj));
-        }
-    };
-
-    var ProtoToken = Object.create(TokenClass);
-    var Token = ProtoToken.new();
-
-    Token.init = function (value, player, currentRow) {
-        this.value = value || 0;
-        this.player = player || 0;
-        this.currentRow = currentRow || 0;
-        this.currentTurn = 0;
-    };
-
-    Token.subtractRow = function () {
-        return this.currentRow === 0 ? 0 : this.currentRow--;
-    };
-
-    /** ------------------------------------------------------------------------------
-     *                                TOKENS
-     * -------------------------------------------------------------------------------- */
-
-    CFour.play = function (row, col) {
-        console.log('click on:' + row + ',' + col);
-        console.log(CFour.board[row][col]);
-
-        var token = CFour.board[row][col];
-        console.log('token.currentRow:' + token.currentRow);
-        CFour.board[token.currentRow][col].value  = CFour.palyerId; // well it seems I just needed one
-        CFour.board[token.currentRow][col].player = CFour.palyerId;
-
-        token.subtractRow();
-    };
-
-
-
-    var row = [0, 0, 0, 0, 0, 0, 0];
-
-    var i, item, token, depthRow = 6;
-    CFour.board = [];
-
-    for (i = 0; i < depthRow; i++) {
-
-        item = row.map(function () {
-            token = Object.create(Token);
-            token.init(0, 0, depthRow - 1);
-            return token;
-        });
-
-        CFour.board.push(item);
     }
-
 
 
 };
 
-ConnectFourController.$inject = ['$routeParams'];
+ConnectFourController.$inject = ['$routeParams', 'ConnectFourAPIService'];
 
 module.exports = ConnectFourController;
