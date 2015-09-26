@@ -104,6 +104,7 @@ var ConnectFourController = function ($scope, $routeParams, ConnectFourAPIServic
                             CFour.board[i][j].player = board[i][j].player;
                             CFour.board[i][j].value = board[i][j].value;
                         }
+                            CFour.board[i][j].currentRow = board[i][j].currentRow;
 
                     }
                 }
