@@ -14,7 +14,7 @@ app.config(['$locationProvider', '$routeProvider', function ($locationProvider, 
 
     $locationProvider.html5Mode(false);
 
-    $routeProvider.when('/games/:player?', {
+    $routeProvider.when('/games/:playerId?', {
         template: require('./game/components/connectFour/connectFour.html'),
         controller: 'ConnectFourController',
         controllerAs: 'CFour'

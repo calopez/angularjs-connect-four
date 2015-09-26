@@ -1,66 +1,11 @@
-
-
-<div class="container">
+<div class="container" >
 
   <div class="main">
-      <div class="row">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
+      <div class="row" ng-repeat="row in CFour.board">
+        <div class="circle" ng-repeat="token in row track by $index"
+        ng-click="CFour.play($parent.$index, $index)">{{token.value}}</div>
+      </div>
 
-      </div>
-      <div class="row">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-
-      </div>
-      <div class="row">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="row">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-
-      </div>
-      <div class="row">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-
-      </div>
-      <div class="row">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
   </div>
   <div class="panel">
       <div class="turn"><h1>PLAYER 1's TURN</h1></div>
@@ -76,4 +21,8 @@
       </div>
       <div class="restart"></div>
   </div>
+</div>
+
+<div class="container" ng-if="!CFour.rightPlayer">
+<h1>Sorry! Invalid Player</h1>
 </div>
